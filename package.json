@@ -1,0 +1,17 @@
+{
+  "name": "albs.app.scoreboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^7.1.2"
+  },
+  "dependencies": {
+    "easytimer": "^1.1.1"
+  }
+}

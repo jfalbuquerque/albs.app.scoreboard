@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>C O N T R O L L E R</title>
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <div>
+      <div class="names-row">
+        <div class="name">
+          Home
+        </div>
+        <div class="name">
+          Visitor
+        </div>
+      </div>
+
+      <div class="content-row">
+        <div class="team-column">
+          <h2>SCORE</h2>
+          <div class="control-score-container">
+            <div class="control-score" id="control-score-home">00</div>
+            <div class="control-score-btns">
+              <button
+                class="btn small score"
+                data-team="home"
+                data-increment="true"
+              >
+                +
+              </button>
+              <button
+                class="btn small score"
+                data-team="home"
+                data-increment="false"
+              >
+                -
+              </button>
+            </div>
+          </div>
+          <h2>FAULTS</h2>
+          <div class="control-faults-container">
+            <div class="control-faults" id="control-faults-home">00</div>
+            <div class="control-faults-btns">
+              <button
+                class="btn small fault"
+                data-team="home"
+                data-increment="true"
+              >
+                +
+              </button>
+              <button
+                class="btn small fault"
+                data-team="home"
+                data-increment="false"
+              >
+                -
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="timer-column">
+          <h2>TIME</h2>
+          <div class="control-timer">
+            <div id="timer">18:00</div>
+            <div>
+              <button class="btn small"><</button>
+            </div>
+          </div>
+          <div>
+            <button type="button" id="start" class="btn">Start</button>
+          </div>
+        </div>
+
+        <div class="team-column">
+          <h2>SCORE</h2>
+          <div class="control-score-container">
+            <div class="control-score" id="control-score-visitor">00</div>
+            <div class="control-score-btns">
+              <button
+                class="btn small score"
+                data-team="visitor"
+                data-increment="true"
+              >
+                +
+              </button>
+              <button
+                class="btn small score"
+                data-team="visitor"
+                data-increment="false"
+              >
+                -
+              </button>
+            </div>
+          </div>
+          <h2>FAULTS</h2>
+          <div class="control-faults-container">
+            <div class="control-faults" id="control-faults-visitor">00</div>
+            <div class="control-faults-btns">
+              <button
+                class="btn small fault"
+                data-team="visitor"
+                data-increment="true"
+              >
+                +
+              </button>
+              <button
+                class="btn small fault"
+                data-team="visitor"
+                data-increment="false"
+              >
+                -
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./controller.js"></script>
+  </body>
+</html>

@@ -1,16 +1,16 @@
 {
-  "name": "my-app",
+  "name": "scoreboard",
   "description": "Electron + Create React App + Electron Builder",
   "version": "0.1.0",
   "private": true,
   "author": {
-    "name": "Your Name",
-    "email": "your.email@domain.com",
+    "name": "João Albuquerque",
+    "email": "jfalbuquerque@gmail.com",
     "url": "https://your-website.com"
   },
   "build": {
     "appId": "com.my-website.my-app",
-    "productName": "MyApp",
+    "productName": "Scoreboard",
     "copyright": "Copyright © 2019 ${author}",
     "mac": {
       "category": "public.app-category.utilities"
@@ -24,6 +24,7 @@
     }
   },
   "dependencies": {
+    "easytimer": "^1.1.1",
     "electron-is-dev": "^1.0.1",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",

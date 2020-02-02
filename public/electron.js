@@ -14,6 +14,7 @@ function createWindow() {
   const { screen } = require("electron");
   const ecran = screen.getPrimaryDisplay();
   const width = ecran.bounds.width;
+  let teams = constants.DEFAULT_TEAMS;
 
   controller = new BrowserWindow({ width: 800, height: 450 });
   controller.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
@@ -28,29 +29,53 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    // controller.webContents.openDevTools();
-    // display.webContents.openDevTools();
+    controller.webContents.openDevTools();
+    display.webContents.openDevTools();
   }
 
   controller.on("closed", () => (controller = null));
   display.on("closed", () => (controller = null));
 
-  /////// EVENTS
+  /////// EVENTS ///////
+  /* timer */
   timer.addEventListener("secondTenthsUpdated", e => {
-    const time = `${timer.getTimeValues().minutes.toString()}:${timer.getTimeValues().seconds.toString()}`;
+    const time = {
+      secondTenths: timer.getTimeValues().secondTenths,
+      seconds: timer.getTimeValues().seconds,
+      minutes: timer.getTimeValues().minutes,
+      hours: timer.getTimeValues().hours
+    };
 
     controller.send(constants.TIME_UPDATE_EVENT, time);
     display.send(constants.TIME_UPDATE_EVENT, time);
   });
+  timer.addEventListener("started", e => {
+    controller.send("started");
+  });
+  /* windows */
+  ipcMain.on(constants.SCORE_EVENT, (event, args) => {
+    teams = {
+      ...teams,
+      [args.team]: {
+        ...teams[args.team],
+        [args.value]: args.increment ? teams[args.team][args.value] + 1 : teams[args.team][args.value] - 1
+      }
+    };
+
+    controller.send(constants.SCORE_UPDATE_EVENT, teams);
+    display.send(constants.SCORE_UPDATE_EVENT, teams);
+  });
 
   ipcMain.on("start", (event, args) => {
-    console.log("start", args);
-
     timer.start({
       countdown: true,
       startValues: { minutes: 18 },
       precision: "secondTenths"
     });
+  });
+
+  ipcMain.on("pause", (event, args) => {
+    timer.pause();
   });
 }
 

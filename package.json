@@ -24,6 +24,8 @@
     }
   },
   "dependencies": {
+    "@material-ui/core": "^4.9.0",
+    "@material-ui/icons": "^4.5.1",
     "easytimer": "^1.1.1",
     "electron-is-dev": "^1.0.1",
     "react": "^16.8.3",

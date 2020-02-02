@@ -1,5 +1,37 @@
+html,
 body {
-  font-family: Anton;
+  height: 100%;
+}
+
+body {
+  font-family: Anton, sans-serif;
   color: #abb2bf;
   background: #2a2e36;
 }
+
+.flex {
+  display: flex;
+}
+
+.flex.column {
+  flex-direction: column;
+}
+
+/**** COUNTER ******/
+.counter h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 8rem;
+}
+.counter .buttons {
+  justify-content: space-evenly;
+}
+/* .counter button {
+  font-size: 1.5rem;
+} */
+.counter.small h1 {
+  font-size: 4rem;
+}
+/* .counter.small button {
+  font-size: 0.75rem;
+} */

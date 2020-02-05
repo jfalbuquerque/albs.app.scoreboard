@@ -1,9 +1,29 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const Timer = require("easytimer/dist/easytimer.min");
+const Store = require("./store.js");
 
 const path = require("path");
 const isDev = require("electron-is-dev");
+
+const store = new Store({
+  // We'll call our data file 'user-preferences'
+  configName: "user-preferences",
+  defaults: {
+    // 800x600 is the default size of our window
+    time: {
+      secondTenths: 0,
+      seconds: 0,
+      minutes: 18,
+      hours: 0
+    }
+  }
+});
+
+// let { width, height } = store.get('windowBounds');
+console.log("store", store.get("time"));
+
 const timer = new Timer();
+let time = store.get("time");
 
 const constants = require("./constants");
 
@@ -33,13 +53,20 @@ function createWindow() {
     display.webContents.openDevTools();
   }
 
+  controller.send(constants.TIME_UPDATE_EVENT, time);
+  display.send(constants.TIME_UPDATE_EVENT, time);
+
+  ipcMain.on("getTime", (event, arg) => {
+    event.returnValue = time;
+  });
+
   controller.on("closed", () => (controller = null));
   display.on("closed", () => (controller = null));
 
   /////// EVENTS ///////
   /* timer */
   timer.addEventListener("secondTenthsUpdated", e => {
-    const time = {
+    time = {
       secondTenths: timer.getTimeValues().secondTenths,
       seconds: timer.getTimeValues().seconds,
       minutes: timer.getTimeValues().minutes,
@@ -67,15 +94,25 @@ function createWindow() {
   });
 
   ipcMain.on("start", (event, args) => {
+    console.log(time);
     timer.start({
       countdown: true,
-      startValues: { minutes: 18 },
+      startValues: time,
       precision: "secondTenths"
     });
   });
 
   ipcMain.on("pause", (event, args) => {
     timer.pause();
+  });
+
+  ipcMain.on("clockUpdate", (event, args) => {
+    time = { ...time, [args.type]: args.increment ? time[args.type] + 1 : time[args.type] - 1 };
+
+    store.set("time", time);
+
+    controller.send(constants.TIME_UPDATE_EVENT, time);
+    display.send(constants.TIME_UPDATE_EVENT, time);
   });
 }
 

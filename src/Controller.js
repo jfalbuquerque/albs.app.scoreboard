@@ -32,6 +32,8 @@ class Controller extends Component {
   }
 
   componentDidMount() {
+    this.setState({ time: ipcRenderer.sendSync('getTime') });
+
     ipcRenderer.on(TIME_UPDATE_EVENT, (event, args) => {
       this.setState({ time: args });
     });
@@ -54,7 +56,12 @@ class Controller extends Component {
   }
 
   pause() {
+    this.setState({ started: false });
     ipcRenderer.send("pause");
+  }
+
+  clockUpdate(type, increment) {
+    ipcRenderer.send("clockUpdate", { type, increment });
   }
 
   render() {
@@ -95,7 +102,13 @@ class Controller extends Component {
 
             <Grid container item xs={4} alignItems='center' justify='space-between' direction='row'>
               <Divider className={classes.divider} orientation='vertical' />
-              <Timer time={time} onStart={this.start} started={started} onPause={this.pause} />
+              <Timer
+                time={time}
+                onStart={this.start}
+                started={started}
+                onPause={() => this.pause()}
+                onClockUpdate={this.clockUpdate}
+              />
               <Divider className={classes.divider} orientation='vertical' />
             </Grid>
 

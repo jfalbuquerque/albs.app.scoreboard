@@ -18,6 +18,8 @@ class Display extends Component {
   }
 
   componentDidMount() {
+    this.setState({ time: ipcRenderer.sendSync('getTime') });
+
     ipcRenderer.on(TIME_UPDATE_EVENT, (event, args) => {
       this.setState({ time: args });
     });

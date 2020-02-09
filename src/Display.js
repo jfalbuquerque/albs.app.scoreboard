@@ -1,65 +1,51 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { ipcRenderer } from "electron";
-import Timer from "./components/Timer";
-import Counter from "./components/Counter";
 
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/styles";
+import { Typography } from "@material-ui/core";
 
-import { DEFAULT_TIME, DEFAULT_TEAMS, TIME_UPDATE_EVENT, SCORE_UPDATE_EVENT } from "./constants";
+import { SCREEN_CHANGE_EVENT } from "./constants";
+
+const styles = theme => ({
+  root: {
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});
 
 class Display extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      time: DEFAULT_TIME,
-      teams: DEFAULT_TEAMS
-    };
+
+    this.screenChangeHandler = this.screenChangeHandler.bind(this);
   }
 
   componentDidMount() {
-    this.setState({ time: ipcRenderer.sendSync('getTime') });
+    ipcRenderer.on(SCREEN_CHANGE_EVENT, this.screenChangeHandler);
+  }
 
-    ipcRenderer.on(TIME_UPDATE_EVENT, (event, args) => {
-      this.setState({ time: args });
-    });
+  componentWillUnmount() {
+    ipcRenderer.removeListener(SCREEN_CHANGE_EVENT, this.screenChangeHandler);
+  }
 
-    ipcRenderer.on(SCORE_UPDATE_EVENT, (event, args) => {
-      this.setState({ teams: args });
-    });
+  screenChangeHandler() {
+    this.props.history.push("/scores");
   }
 
   render() {
-    const { time, teams } = this.state;
+    const { classes } = this.props;
 
     return (
-      <div className='flex'>
-        <Grid container>
-          <Grid item xs={6}>
-            {teams.home.name}
-          </Grid>
-          <Grid item xs={6}>
-            {teams.visitor.name}
-          </Grid>
-          <Grid item xs={4}>
-            <Counter value={teams.home.result} />
-          </Grid>
-          <Grid item xs={4}>
-            <Timer time={time} />
-          </Grid>
-          <Grid item xs={4}>
-            <Counter value={teams.visitor.result} />
-          </Grid>
-          <Grid item xs={6}>
-            <Counter value={teams.home.faults} small />
-          </Grid>
-          <Grid item xs={6}>
-            <Counter value={teams.visitor.faults} small />
-          </Grid>
-        </Grid>
+      <div className={classes.root}>
+        <img src={require("./assets/gulpilhares.png")} alt='Gulpilhares' width='200' />
+        <Typography variant='h3'>A.C.D. Gulpilhares</Typography>
       </div>
     );
   }
 }
 
-export default Display;
+export default withStyles(styles)(withRouter(Display));

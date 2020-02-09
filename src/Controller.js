@@ -2,19 +2,30 @@ import React, { Component } from "react";
 import { ipcRenderer } from "electron";
 import Timer from "./components/Timer";
 import Counter from "./components/Counter";
+import Navbar from "./components/Navbar";
 import Team from "./components/Team";
 
 import { withStyles } from "@material-ui/styles";
 import { Container, Grid, Divider } from "@material-ui/core";
 
-import { DEFAULT_TIME, DEFAULT_TEAMS, TIME_UPDATE_EVENT, SCORE_EVENT, SCORE_UPDATE_EVENT } from "./constants";
+import {
+  DEFAULT_TIME,
+  DEFAULT_TEAMS,
+  TIME_UPDATE_EVENT,
+  SCORE_EVENT,
+  SCORE_UPDATE_EVENT,
+  SCREEN_CHANGE_EVENT
+} from "./constants";
 
 const styles = theme => ({
   root: {
-    height: "100vh"
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch"
   },
   grow: {
-    flexGrow: 1
+    flex: 1
   },
   divider: {
     backgroundColor: "whitesmoke"
@@ -32,7 +43,7 @@ class Controller extends Component {
   }
 
   componentDidMount() {
-    this.setState({ time: ipcRenderer.sendSync('getTime') });
+    this.setState({ time: ipcRenderer.sendSync("getTime") });
 
     ipcRenderer.on(TIME_UPDATE_EVENT, (event, args) => {
       this.setState({ time: args });
@@ -64,28 +75,31 @@ class Controller extends Component {
     ipcRenderer.send("clockUpdate", { type, increment });
   }
 
+  changeScreen() {
+    ipcRenderer.send(SCREEN_CHANGE_EVENT);
+  }
+
   render() {
     const { time, teams, started } = this.state;
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <Grid container className={classes.root} direction='column'>
+        <Navbar onChangeScreen={this.changeScreen} />
+        <Grid container direction='column' className={classes.grow}>
           <Grid container>
-            <Grid container item xs={5} alignItems='center' justify='center'>
-              {teams.home.name}
+            <Grid container item xs={4} alignItems='center' justify='center'>
+              <h1>{teams.home.name}</h1>
             </Grid>
-            <Grid container item xs={2} alignItems='center' justify='center'>
-              Vs
+            <Grid container item xs={4} alignItems='center' justify='center'>
+              <h3>Vs</h3>
             </Grid>
-            <Grid container item xs={5} alignItems='center' justify='center'>
-              {teams.visitor.name}
+            <Grid container item xs={4} alignItems='center' justify='center'>
+              <h1>{teams.visitor.name}</h1>
             </Grid>
           </Grid>
 
-          <Container>
-            <Divider className={classes.divider} />
-          </Container>
+          <Divider className={classes.divider} />
 
           <Grid container item className={classes.grow}>
             <Grid container item xs={4} direction='column' alignItems='center' justify='center'>

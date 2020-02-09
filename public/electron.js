@@ -6,10 +6,9 @@ const path = require("path");
 const isDev = require("electron-is-dev");
 
 const store = new Store({
-  // We'll call our data file 'user-preferences'
   configName: "user-preferences",
   defaults: {
-    // 800x600 is the default size of our window
+    name: "Scoreboard",
     time: {
       secondTenths: 0,
       seconds: 0,
@@ -18,9 +17,6 @@ const store = new Store({
     }
   }
 });
-
-// let { width, height } = store.get('windowBounds');
-console.log("store", store.get("time"));
 
 const timer = new Timer();
 let time = store.get("time");
@@ -49,8 +45,8 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    controller.webContents.openDevTools();
-    display.webContents.openDevTools();
+    // controller.webContents.openDevTools();
+    // display.webContents.openDevTools();
   }
 
   controller.send(constants.TIME_UPDATE_EVENT, time);
@@ -94,7 +90,6 @@ function createWindow() {
   });
 
   ipcMain.on("start", (event, args) => {
-    console.log(time);
     timer.start({
       countdown: true,
       startValues: time,
@@ -113,6 +108,10 @@ function createWindow() {
 
     controller.send(constants.TIME_UPDATE_EVENT, time);
     display.send(constants.TIME_UPDATE_EVENT, time);
+  });
+
+  ipcMain.on(constants.SCREEN_CHANGE_EVENT, (event, args) => {
+    display.send(constants.SCREEN_CHANGE_EVENT);
   });
 }
 
